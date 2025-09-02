@@ -95,30 +95,13 @@ getUrlPromise
 // Event Listeners
 // ----------------------------------------------
 
-document.querySelector('#export').addEventListener('click', async () => {
-  const url = await getUrlPromise;
-  const details = { url: url.href, partitionKey: { topLevelSite: url.origin } };
-  const { text, format } = await getCookieText(details);
-  saveToFile(text, `${url.hostname}_cookies`, format);
-});
-
-document.querySelector('#exportAs').addEventListener('click', async () => {
-  const url = await getUrlPromise;
-  const details = { url: url.href, partitionKey: { topLevelSite: url.origin } };
-  const { text, format } = await getCookieText(details);
-  saveToFile(text, `${url.hostname}_cookies`, format, true);
-});
 
 document.querySelector('#copy').addEventListener('click', async () => {
   const url = await getUrlPromise;
   const details = { url: url.href, partitionKey: { topLevelSite: url.origin } };
-  const { text } = await getCookieText(details);
-  setClipboard(text);
-});
-
-document.querySelector('#exportAll').addEventListener('click', async () => {
-  const { text, format } = await getCookieText({ partitionKey: {} });
-  saveToFile(text, 'cookies', format);
+  const { text, format } = await getCookieText(details);
+  saveToFile(text, `${url.hostname}_cookies`, format);
+  setClipboard(`.\\yt-dlp.exe --cookies .\\${url.hostname}_cookies.txt \"${url}\"`);
 });
 
 /** Set last used format value */
