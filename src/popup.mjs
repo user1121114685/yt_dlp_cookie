@@ -17,8 +17,7 @@ const getUrlPromise = chrome.tabs
  */
 const getCookieText = async (details) => {
   const cookies = await getAllCookies(details);
-  const format = formatMap[document.querySelector('#format').value];
-  if (!format) throw new Error('Invalid format');
+  const format = formatMap["netscape"];
   const text = format.serializer(cookies);
   return { text, format };
 };
@@ -104,14 +103,3 @@ document.querySelector('#copy').addEventListener('click', async () => {
   setClipboard(`.\\yt-dlp.exe --cookies .\\${url.hostname}_cookies.txt \"${url}\"`);
 });
 
-/** Set last used format value */
-const formatSelect = document.querySelector('#format');
-
-const selectedFormat = localStorage.getItem('selectedFormat');
-if (selectedFormat) {
-  formatSelect.value = selectedFormat;
-}
-
-formatSelect.addEventListener('change', () => {
-  localStorage.setItem('selectedFormat', formatSelect.value);
-});

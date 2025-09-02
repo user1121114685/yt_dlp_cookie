@@ -8,12 +8,12 @@
     <link rel="stylesheet" href="iconfont/material-icons.css" />
     <link rel="stylesheet" href="donation.css" />
     <script src="popup.mjs" type="module" defer></script>
-    <script src="table-nowrap.js" defer></script>
   </head>
 
   <body>
     <header>
-      <h1>Get cookies.txt for <a id="location"></a></h1>
+      <h2>1.保存Cookie到yt-dlp目录 </h2>
+      <h2>2.在yt-dlp目录Cmd/PowerShell中粘贴命令 </h2>
       <hr />
     </header>
     <main>
@@ -24,22 +24,6 @@
           <span class="material-symbols-outlined">content_paste</span>
         </button>
 
-      </div>
-
-      <div id="optionsContainer" class="option-container">
-        <div class="format-option option">
-          <label for="format">Export Format:</label>
-          <select id="format" name="format">
-            <option value="netscape" selected>Netscape</option>
-            <option value="json">JSON</option>
-            <option value="header">Header String</option>
-          </select>
-        </div>
-
-        <div class="nowrap-option option">
-          <label for="nowrapOption">Table Nowrap: </label>
-          <input type="checkbox" id="nowrapOption" name="nowrapOption" checked />
-        </div>
       </div>
 
       <div class="table-container">
