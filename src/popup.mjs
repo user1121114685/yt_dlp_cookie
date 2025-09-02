@@ -60,11 +60,6 @@ const setClipboard = async (text) => {
 // Actions after resolving the promise
 // ----------------------------------------------
 
-/** Set URL in the header */
-getUrlPromise.then((url) => {
-  const location = document.querySelector('#location');
-  location.textContent = location.href = url.href;
-});
 
 /** Set Cookies data to the table */
 getUrlPromise
