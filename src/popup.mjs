@@ -94,7 +94,13 @@ document.querySelector('#copy').addEventListener('click', async () => {
   const url = await getUrlPromise;
   const details = { url: url.href, partitionKey: { topLevelSite: url.origin } };
   const { text, format } = await getCookieText(details);
-  saveToFile(text, `${url.hostname}_cookies`, format);
-  setClipboard(`.\\yt-dlp.exe --cookies .\\${url.hostname}_cookies.txt \"${url}\"`);
+
+  const filename = `${url.hostname}_cookies${format.ext}`;
+
+  const base64Text = btoa(unescape(encodeURIComponent(text)));
+  // 使用 UTF8NoBOM 编码（PowerShell 5.1+）或写入字节数组
+  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText((Resolve-Path '.\\${filename}'), $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies '.\\${filename}' "${url}"`;
+
+  await setClipboard(command);
 });
 
