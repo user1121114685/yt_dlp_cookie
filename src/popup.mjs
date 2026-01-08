@@ -23,31 +23,6 @@ const getCookieText = async (details) => {
 };
 
 /**
- * Save text data as a file
- * Firefox fails if revoked during download.
- * @param {string} text
- * @param {string} name
- * @param {Format} format
- * @param {boolean} saveAs
- */
-const saveToFile = async (text, name, { ext, mimeType }, saveAs = false) => {
-  const blob = new Blob([text], { type: mimeType });
-  const filename = name + ext;
-  const url = URL.createObjectURL(blob);
-  const id = await chrome.downloads.download({ url, filename, saveAs });
-
-  /** @param {chrome.downloads.DownloadDelta} delta  */
-  const onChange = (delta) => {
-    if (delta.id === id && delta.state?.current !== 'in_progress') {
-      chrome.downloads.onChanged.removeListener(onChange);
-      URL.revokeObjectURL(url);
-    }
-  };
-
-  chrome.downloads.onChanged.addListener(onChange);
-};
-
-/**
  * Copy text data to the clipboard
  * @param {string} text
  */
@@ -98,8 +73,8 @@ document.querySelector('#copy').addEventListener('click', async () => {
   const filename = `${url.hostname}_cookies${format.ext}`;
 
   const base64Text = btoa(unescape(encodeURIComponent(text)));
-  // 使用 UTF8NoBOM 编码（PowerShell 5.1+）或写入字节数组
-  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText((Resolve-Path '.\\${filename}'), $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies '.\\${filename}' "${url}"`;
+  // 直接使用相对路径字符串拼接成绝对路径
+  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText("$PWD\\${filename}", $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies ".\\${filename}" "${url}"`;
 
   await setClipboard(command);
 });
