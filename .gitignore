@@ -106,3 +106,5 @@ dist
 dst/
 dist/
 *.zip
+/src/.idea
+/.idea

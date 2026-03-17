@@ -35,6 +35,17 @@ const setClipboard = async (text) => {
 // Actions after resolving the promise
 // ----------------------------------------------
 
+const downloadSubCheckbox = document.querySelector('#download-sub');
+
+// Load state
+chrome.storage.local.get(['downloadSub'], (result) => {
+  downloadSubCheckbox.checked = result.downloadSub || false;
+});
+
+// Save state
+downloadSubCheckbox.addEventListener('change', () => {
+  chrome.storage.local.set({ downloadSub: downloadSubCheckbox.checked });
+});
 
 /** Set Cookies data to the table */
 getUrlPromise
@@ -74,7 +85,8 @@ document.querySelector('#copy').addEventListener('click', async () => {
 
   const base64Text = btoa(unescape(encodeURIComponent(text)));
   // 直接使用相对路径字符串拼接成绝对路径
-  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText("$PWD\\${filename}", $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies ".\\${filename}" "${url}"`;
+  const subParams = downloadSubCheckbox.checked ? ' --write-sub --write-auto-sub --sub-lang zh-CN,zh,en' : '';
+  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText("$PWD\\${filename}", $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies ".\\${filename}" "${url}"${subParams}`;
 
   await setClipboard(command);
 });
