@@ -4,22 +4,33 @@ import getAllCookies from './modules/get_all_cookies.mjs';
  * Update icon badge counter on active page
  */
 const updateBadgeCounter = async () => {
-  const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
-  if (!tab) {
-    return;
+  try {
+    const [tab] = await chrome.tabs.query({
+      active: true,
+      currentWindow: true,
+    });
+    if (!tab) {
+      return;
+    }
+    const { id: tabId, url: urlString } = tab;
+    if (!urlString) {
+      await chrome.action.setBadgeText({ tabId, text: '' });
+      return;
+    }
+    const url = new URL(urlString);
+    const cookies = await getAllCookies({
+      url: url.href,
+      partitionKey: { topLevelSite: url.origin },
+    });
+    const text = cookies.length.toFixed();
+    await chrome.action.setBadgeText({ tabId, text });
+  } catch (error) {
+    // The tab can close while querying cookies or updating its badge.
+    if (/^No tab with id: \d+\.?$/.test(error?.message ?? '')) {
+      return;
+    }
+    console.error('Failed to update cookie badge:', error);
   }
-  const { id: tabId, url: urlString } = tab;
-  if (!urlString) {
-    chrome.action.setBadgeText({ tabId, text: '' });
-    return;
-  }
-  const url = new URL(urlString);
-  const cookies = await getAllCookies({
-    url: url.href,
-    partitionKey: { topLevelSite: url.origin },
-  });
-  const text = cookies.length.toFixed();
-  chrome.action.setBadgeText({ tabId, text });
 };
 
 chrome.cookies.onChanged.addListener(updateBadgeCounter);

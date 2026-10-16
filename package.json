@@ -10,6 +10,7 @@
     "prettier": "^3.5.3"
   },
   "scripts": {
+    "test": "node --test",
     "format": "npx prettier --write src",
     "build": "npm run build:chrome && npm run build:firefox",
     "build:chrome": "node build.js",
