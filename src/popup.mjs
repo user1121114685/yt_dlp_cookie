@@ -84,9 +84,12 @@ document.querySelector('#copy').addEventListener('click', async () => {
   const filename = `${url.hostname}_cookies${format.ext}`;
 
   const base64Text = btoa(unescape(encodeURIComponent(text)));
-  // 直接使用相对路径字符串拼接成绝对路径
-  const subParams = downloadSubCheckbox.checked ? ' --write-sub --write-auto-sub --sub-lang zh-CN,zh,en' : '';
-  const command = `$content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText("$PWD\\${filename}", $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies ".\\${filename}" "${url}"${subParams}`;
+  // 匹配实际字幕代码，包括 zh-Hans、zh-Hant-zh-Hans 和 en-zh-Hans。
+  const subParams = downloadSubCheckbox.checked
+    ? ' --write-subs --write-auto-subs --sub-langs "zh.*,en.*" --sub-format "srt/best"'
+    : '';
+  // 粘贴执行时先更新 yt-dlp，再导出 cookies 并下载。
+  const command = `.\\yt-dlp.exe -U; $content = [System.Text.Encoding]::UTF8.GetString([System.Convert]::FromBase64String('${base64Text}')); [System.IO.File]::WriteAllText("$PWD\\${filename}", $content, (New-Object System.Text.UTF8Encoding $false)); .\\yt-dlp.exe --cookies ".\\${filename}" "${url}"${subParams}`;
 
   await setClipboard(command);
 });

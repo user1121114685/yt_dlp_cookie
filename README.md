@@ -20,6 +20,16 @@ Specifically, it now needs "Download management" to execute a more appropriate f
 
 
 ## Installation
+### yt-dlp PowerShell command
+
+点击 **Copy Cmd** 后，在 `yt-dlp.exe` 所在目录的 PowerShell 中粘贴执行：
+
+1. 先运行 `.\yt-dlp.exe -U` 检查并更新 yt-dlp；更新失败时仍会尝试用现有版本继续下载。
+2. 将当前网站的 cookies 写入本地文件，再下载当前页面的视频。
+3. 勾选“下载中英文字幕”时，附加 `--write-subs --write-auto-subs --sub-langs "zh.*,en.*" --sub-format "srt/best"`。按实际可用的语言代码匹配中英文字幕（包括自动生成、自动翻译），优先 SRT，不提供 SRT 时使用最佳可用格式。未勾选时不附加字幕参数。
+
+例如 `g6J5fcHsWFU` 的字幕列表中，`zh-Hans`、`zh-Hans-zh-Hans`、`zh-Hant-zh-Hans`、`en-zh-Hans` 都会匹配；`ab-zh-Hans`、`ja-zh-Hans` 等其他目标语言不会匹配。多个匹配的字幕轨会分别保存，语言列表并不是优先级或回退列表。
+
 ### From WebStore
 
 [link-chrome]: https://chrome.google.com/webstore/detail/get-cookiestxt-locally/cclelndahbckbenkjhflpdbgdldlbecc 'Chrome Web Store'

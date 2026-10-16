@@ -108,3 +108,6 @@ dist/
 *.zip
 /src/.idea
 /.idea
+
+# Local extension signing key
+/src.pem
